@@ -1,7 +1,7 @@
 from webkit import WebView
 import pygtk
 pygtk.require('2.0')
-import gtk, threading, time, glib
+import sys, gtk, threading, time, glib
 from nuimo import NuimoScanner, Nuimo, NuimoDelegate
 
 glib.threads_init()
@@ -34,13 +34,17 @@ class App:
 
     def loadUrls(self):
         self.current = 2
+        urlsPath = 'urls.csv'
+        if len(sys.argv) > 1:
+            urlsPath = sys.argv[1]
+        
         try:
-            with open('urls.csv') as f:
+            with open(urlsPath) as f:
                 self.urls = f.readlines()
                 #remove empties
                 self.urls = filter(None, self.urls)
         except:
-            print 'failed to read urls.csv'
+            print 'failed to read ' + urlsPath
             self.urls = ['http://google.com?q=page1', 'http://google.com?q=page2', 'http://google.com?q=page3']        
 
     def rotate(self, val):

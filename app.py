@@ -1,8 +1,10 @@
 from webkit import WebView
 import pygtk
 pygtk.require('2.0')
-import sys, gtk, threading, time
+import sys, gtk, threading, time, glib
 from nuimo import NuimoScanner, Nuimo, NuimoDelegate
+
+glib.threads_init()
 
 class App:
     def __init__(self):
