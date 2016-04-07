@@ -16,6 +16,12 @@ class App:
         window.show_all()
         self.view.open(self.urls[self.current])
 
+        self.hadnuimoaction = False
+
+        thread = threading.Thread(target=self.auto_loop)
+        thread.daemon = True
+        thread.start()
+
     def loadUrls(self):
         self.current = 0
         urlsPath = 'urls.csv'
@@ -40,6 +46,18 @@ class App:
         if self.current < 0:
             self.current = len(self.urls) - 1
         self.view.open(self.urls[self.current])
+    
+    def auto_loop(self):
+        sleep = 18
+        if len(sys.argv) > 2:
+            sleep = float(sys.argv[2])
+
+        while True:
+            time.sleep(sleep)
+            if self.hadnuimoaction == False:
+                gtk.idle_add(self.next)
+            else:
+                self.hadnuimoaction = False
 
 class CustomNuimoDelegate(NuimoDelegate):
     def __init__(self, nuimo, app):
@@ -48,6 +66,7 @@ class CustomNuimoDelegate(NuimoDelegate):
         
     def handleSwipe(self, data):
         NuimoDelegate.handleSwipe(self, data)
+        self.app.hadnuimoaction = True
         if data == 1:
             gtk.idle_add(app.next)
         else:
@@ -55,6 +74,7 @@ class CustomNuimoDelegate(NuimoDelegate):
             
     def handleButton(self, data):
         NuimoDelegate.handleButton(self, data)
+        self.app.hadnuimoaction = True
         if data == 1:
             gtk.idle_add(app.next)
 
@@ -88,15 +108,6 @@ def main():
 if __name__ == "__main__":
     app = App()
     
-    def auto_advance_process():
-        sleep = 18
-        if len(sys.argv) > 2:
-            sleep = float(sys.argv[2])
-
-        while True:
-            time.sleep(sleep)
-            gtk.idle_add(app.next)
-            
     def nuimo_process():
         
         def foundDevice(addr):
@@ -120,8 +131,5 @@ if __name__ == "__main__":
     thread.daemon = True
     thread.start()
     
-    thread2 = threading.Thread(target=auto_advance_process)
-    thread2.daemon = True
-    thread2.start()
     main()
     
