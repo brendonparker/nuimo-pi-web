@@ -1,7 +1,7 @@
 from webkit import WebView
 import pygtk
 pygtk.require('2.0')
-import gtk, threading, time
+import sys, gtk, threading, time
 from nuimo import NuimoScanner, Nuimo, NuimoDelegate
 
 class App:
@@ -18,13 +18,17 @@ class App:
 
     def loadUrls(self):
         self.current = 0
+        urlsPath = 'urls.csv'
+        if len(sys.argv) > 1:
+            urlsPath = sys.argv[1]
+        
         try:
-            with open('urls.csv') as f:
+            with open(urlsPath) as f:
                 self.urls = f.readlines()
                 #remove empties
                 self.urls = filter(None, self.urls)
         except:
-            print 'failed to read urls.csv'
+            print 'failed to read ' + urlsPath
             self.urls = ['http://google.com']
 
     def next(self):
@@ -83,8 +87,18 @@ def main():
 
 if __name__ == "__main__":
     app = App()
+    
+    def auto_advance_process():
+        sleep = 18
+        if len(sys.argv) > 2:
+            sleep = float(sys.argv[2])
+
+        while True:
+            time.sleep(sleep)
+            gtk.idle_add(app.next)
             
     def nuimo_process():
+        
         def foundDevice(addr):
             print 'found device: ' + addr
             nuimo = Nuimo(addr)
@@ -101,7 +115,13 @@ if __name__ == "__main__":
                 print 'failed to connect to nuimo: %s' % e
                 time.sleep(5)
 
+
     thread = threading.Thread(target=nuimo_process)
     thread.daemon = True
     thread.start()
+    
+    thread2 = threading.Thread(target=auto_advance_process)
+    thread2.daemon = True
+    thread2.start()
     main()
+    

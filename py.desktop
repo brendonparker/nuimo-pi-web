@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Name=app
+Comment=
+Exec=sudo python /home/pi/Dev/nuimo-py-web/app.py '/home/pi/Dev/nuimo-py-web/urls.csv'
+StartupNotify=false
+Terminal=false
+Hidden=false
