@@ -1,8 +1,29 @@
 #Raspberry Pi Web-Signage with Nuimo Controller
 This repo demonstrates controlling a "digital-signage" dashboard using a Nuimo controller.
 
+## Installation/Setup from fresh Raspbian Image
+1. install latest Jessie image (full, not-lite) (https://www.raspberrypi.org/documentation/installation/installing-images/mac.md)
+- `sudo apt-get update` (Update latest bits)
+2. Install bluez library
+- `sudo apt-get install --no-install-recommends bluetooth` (Installs bluez)
+- `sudo hciconfig hci0 up` (Enables your Bluetooth dongle)
+- _Optional_: `sudo hcitool lescan` (Should discover your Nuimo, press Ctrl+C to stop discovery)
+3. Install bluepy library
+- `sudo apt-get install build-essential libglib2.0-dev libdbus-1-dev python-setuptools git` (Installs build dependencies and git)
+- `sudo pip install -U pip` (Upgrade Pip to latest version)
+- `sudo pip install https://github.com/IanHarvey/bluepy/archive/master.zip#bluepy`
+4. Install python-webkit
+- `sudo apt-get install python-webkit`
+4. Pull this repo
+- `git checkout git://github.com/brendonparker/nuimo-py-web`
+
+### WebKit References
+https://github.com/although2013/Ticket_prices/blob/master/README.md
+https://andyortlieb.wordpress.com/2010/05/21/webkit-python-gtk-on-debian-lenny/
+http://trac.webkit.org/wiki/UsingGitWithWebKit
+
 ## Auto-Start (Kiosk mode)
-copy the `py.desktop` into $HOME/.config/autostart
+copy the `py.desktop` into `$HOME/.config/autostart`
 you may need to edit the path to the app within that file
 
 ### Update autostart
