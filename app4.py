@@ -4,7 +4,9 @@ pygtk.require('2.0')
 import sys, gtk, threading, time, glib
 import xml.sax.saxutils
 from nuimo import NuimoScanner, Nuimo, NuimoDelegate
+from ipaddress import IpAddress
 
+ip = IpAddress()
 glib.threads_init()
 
 class MainWindow(gtk.Window):
@@ -23,11 +25,12 @@ class MainWindow(gtk.Window):
         self.label = gtk.Label()
         self.label.set_justify(gtk.JUSTIFY_LEFT)
         self.label.set_usize(width, 50)
+        self.label.set_label(ip.ipaddress())
         self.fixed.put(self.label, 0, height-50)
 
         # WebView        
         self.webview = WebView()
-        self.webview.set_usize(width, height)
+        self.webview.set_usize(width, height - 50)
         self.fixed.put(self.webview, 0, 0)
 
         self.loadUrls()
@@ -35,9 +38,16 @@ class MainWindow(gtk.Window):
         self.open()
         self.hadnuimoaction = False
 
+        self.showIpAddress()
+
         thread = threading.Thread(target=self.auto_loop)
         thread.daemon = True
         thread.start()
+
+    def showIpAddress(self):
+        text = '<span weight="bold" size="xx-large">%s</span>' % ip.ipaddress()
+        self.label.set_markup(text)
+        self.webview.set_usize(self.width, self.height-50)
 
     def loadUrls(self):
         self.current = 0
@@ -58,7 +68,6 @@ class MainWindow(gtk.Window):
     def open(self):
         self.rotating = False
         self.rotateval = 0
-        #self.fixed.move(self.webview, 0, 0)
         self.webview.set_usize(self.width, self.height)
         self.webview.open(self.urls[self.current][0])
 
@@ -156,7 +165,6 @@ if __name__ == "__main__":
     app.connect("destroy", lambda q: gtk.main_quit())
     app.show_all()
     
-    
     def nuimo_process():
         
         def foundDevice(addr):
@@ -165,6 +173,7 @@ if __name__ == "__main__":
             nuimo.set_delegate(CustomNuimoDelegate(nuimo, app))
             nuimo.connect()
             showImagesOnNuimo(nuimo)
+            
             while True:
                 nuimo.waitForNotifications()
 
