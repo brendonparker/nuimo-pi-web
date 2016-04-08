@@ -1,5 +1,9 @@
 #Raspberry Pi Web-Signage with Nuimo Controller
-This repo demonstrates controlling a "digital-signage" dashboard using a Nuimo controller.
+This repo demonstrates controlling a "digital-signage" dashboard using a Nuimo controller. For now there are several different approaches, all of which revolve around using a config file (`urls.csv`, you need to create this) of webpages and then cyclcing through the webpages on a timer.
+
+- `app.py` has a single WebView that gets reloaded at some interval. You can use the Nuimo controller to advance by pressing the button or swiping forward or backward.
+- `app3.py` was an attempt at having several views, to speed up rendering by pre-loading the next and previous pages. However, the experience on the PI isn't too great; when a webview loads, it haults the PI and results in a not-so-great user experience. I've left it in there as a sample.
+- `app4.py` is what I'd recommend playing with. This allows rotation, which allows the user to rotate to a specific page, then press the button to select it. Similar idea to `app3.py` except I didn't actually render the page, just showed the title at the bottom.
 
 ## Installation/Setup from fresh Raspbian Image
 1. install latest Jessie image (full, not-lite) (https://www.raspberrypi.org/documentation/installation/installing-images/mac.md)
@@ -15,7 +19,7 @@ This repo demonstrates controlling a "digital-signage" dashboard using a Nuimo c
 4. Install python-webkit
 - `sudo apt-get install python-webkit`
 4. Pull this repo
-- `git checkout git://github.com/brendonparker/nuimo-py-web`
+- `git clone https://github.com/brendonparker/nuimo-py-web`
 
 ### WebKit References
 https://github.com/although2013/Ticket_prices/blob/master/README.md
@@ -24,12 +28,11 @@ http://trac.webkit.org/wiki/UsingGitWithWebKit
 
 ## Auto-Start (Kiosk mode)
 copy the `py.desktop` into `$HOME/.config/autostart`
-you may need to edit the path to the app within that file
+you may need to edit the path to the app within that file, depending on where you ran your git clone from.
 
 ### Update autostart
 To disable screensaver and mouse, use the below as reference to go into your `/etc/xdg/lxsession/LXDE/autostart`
-You may need to install `unclutter`
-    `sudo apt-get install unclutter`
+I've found it helpful to install `unclutter`: `sudo apt-get install unclutter`
 
 ````
     @lxpanel --profile LXDE
@@ -53,4 +56,5 @@ You may need to install `unclutter`
 [![YouTube Demo](http://img.youtube.com/vi/15om36vGzek/0.jpg)](http://www.youtube.com/watch?v=15om36vGzek)
 
 ## TODOS:
-  - "Snap" pages after rotation on Nuimo
+  - Install script
+  - Some sort of input (perhaps double tap, or swipe down) to re-display IP Address
