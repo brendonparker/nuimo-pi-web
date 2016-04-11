@@ -75,7 +75,7 @@ class MainWindow(gtk.Window):
         self.rotating = True
         self.rotateval += val
         count = len(self.urls)
-        idx = (self.rotateval / 100) % count
+        idx = (self.current + (self.rotateval / 100)) % count
         text = '%s (%d/%d)' % (self.urls[idx][1], idx+1, count)
         text = xml.sax.saxutils.escape(text)
         text = '<span weight="bold" size="xx-large">%s</span>'%(text)
