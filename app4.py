@@ -71,6 +71,14 @@ class MainWindow(gtk.Window):
         self.webview.set_usize(self.width, self.height)
         self.webview.open(self.urls[self.current][0])
 
+    def login(self):
+        if self.webview.props.uri == 'https://www.pivotaltracker.com/signin':
+            # TODO: Put your username and password here:
+            user = 'user@domain.com'
+            pwd = 'password'
+            script = "$('#credentials_username').val('%s'); $('#credentials_password').val('%s'); $('#signin_form').submit();" % (user, pwd)
+            self.webview.execute_script(script)
+
     def rotate(self, val):
         self.rotating = True
         self.rotateval += val
@@ -103,7 +111,10 @@ class MainWindow(gtk.Window):
             sleep = float(sys.argv[2])
 
         while True:
-            time.sleep(sleep)
+            time.sleep(10)
+            gtk.idle_add(self.login)    
+            time.sleep(sleep-10)
+            
             if self.hadnuimoaction == False:
                 gtk.idle_add(self.next)
             else:
